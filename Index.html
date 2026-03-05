@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Video Feed</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/my.css" />
+<link rel="stylesheet" href="/style.css" />
+  </head>
+<body>
+<!-- Welcome Popup on Page Load -->
+<div class="modal" id="popup">
+  <div class="modal-content">
+    <h2>Welcome!</h2>
+    <p>Welcome to my webpage.</p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+<header>
+  <H2><i class="fa-solid fa-video"></i> My Advanced Video Feed</H2>
+
+  <div class="controls">
+    <div class="menu-wrapper">
+  <button id="menu-btn"><i class="fa-solid fa-bars"></i></button>
+
+  <div id="menu-box" class="menu-box">
+    <div class="menu-item" onclick="showWatchHistory()">📺 Watch History</div>
+    <div class="menu-item" onclick="showLiked()">❤️ Liked Videos</div>
+    <div class="menu-item" onclick="showSaved()">📌 Watch Later</div>
+    <hr>
+    <div class="menu-item" onclick="clearHistory()">🧹 Clear History</div>
+    <div class="menu-item" onclick="toggleDark()">🌙 Dark Mode</div>
+    <hr>
+    <div class="menu-item">⚙️ Settings</div>
+    <div class="menu-item">ℹ️ About</div>
+  </div>
+</div>
+   <input type="text" id="search" placeholder="Search videos...">
+    <div id="search-suggestions" class="suggestions-box"></div>
+    <button onclick="toggleDark()">🌙</button>
+        <div class="links">
+      <i class="fa-solid fa-home"></i><a href="#" target="_blank"> Home </a>
+      <i class="fa-solid fa-link"></i><a href="#" target="_blank">All Posts</a>
+      <i class="fa-solid fa-link"></i><a href="#" target="_blank">RSS</a>
+    </div>
+  </div>
+
+<div class="category-bar">
+  <div id="filters">
+    <button class="filter-btn" data-category="all">All</button>
+    <button class="filter-btn" data-category="animation">Animation</button>
+    <button class="filter-btn" data-category="nature">Nature</button>
+    <button class="filter-btn" data-category="wildlife">Wildlife</button>
+    <button class="filter-btn" data-category="music">Music</button>
+    <button class="filter-btn" data-category="cartoon">Cartoon</button>
+    <button class="filter-btn" data-category="news">News
+      </button>
+  </div>
+</div>
+
+  <!--div class="controls" id="filters">
+    <button class="filter-btn" data-category="animation">Animation</button>
+    <button class="filter-btn" data-category="nature">Nature</button>
+    <button class="filter-btn" data-category="wildlife">Wildlife</button>
+    <button class="filter-btn" data-category="Bra fucking">Boobs</button>
+    <button class="filter-btn" data-category="Hard fucking">Hard fucking</button>
+    <button class="filter-btn" data-category="Playing boobs">Playing boobs</button>
+  </div-->
+</header>
+
+<main id="video-feed"></main>
+<!-- Scripts -->
+<script src="/style.js"></script>
+
+</body>
+</html>
