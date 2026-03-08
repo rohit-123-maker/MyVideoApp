@@ -7,7 +7,240 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/my.css" />
-<link rel="stylesheet" href="/style.css" />
+<link rel="website icon" type="img/jpg" href="/anime-girl.jpg" />
+<style>
+:root{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+  --primary:#38bdf8;
+}
+.dark{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#222;
+  --muted:#666;
+  --primary:#0066cc;
+}
+/*  Welcome Modal Styles  */
+    .modal {
+      display: block;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+    background: linear-gradient(90deg, #FF8B00 0%, #ffffff,#43a047 100%);
+    color: rgba(0, 78, 255, 1);
+      padding: 20px;
+      margin: 15% auto;
+      width: 300px;
+      text-align: center;
+      border-radius: 8px;
+    }
+body{
+  margin:0;
+  font-family:Segoe UI, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding:20px;
+}
+/*  background image  */
+    .bg-img {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    
+header{
+  text-align:center;
+}
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:15px 0;
+  flex-wrap:wrap;
+}
+input{
+  padding:8px 14px;
+  border-radius:20px;
+  border:none;
+}
+button{
+  padding:8px 14px;
+  border-radius:20px;
+  border:none;
+  background:var(--primary);
+  color:white;
+  cursor:pointer;
+}
+.filter-btn{
+  background:#1e293b;
+  color:#fff;
+}
+.filter-btn.active{
+  background:#38bdf8;
+  color:#000;
+}
+/* Category wrapper */
+.category-bar {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 5px 0;
+  margin-bottom: 10px;
+}
+
+.menu-wrapper {
+  position: relative;
+}
+
+#menu-btn {
+  background: var(--card);
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.menu-box {
+  position: absolute;
+  top: 45px;
+  right: 2;
+  width: 200px;
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.4);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.menu-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  color: var(--text);
+  transition: 0.2s;
+}
+
+.menu-item:hover {
+  background: var(--primary);
+  color: black;
+}
+
+.menu-box hr {
+  border: none;
+  border-top: 1px solid var(--muted);
+}
+
+/* Hide scrollbar */
+.category-bar::-webkit-scrollbar {
+  height: 0;
+}
+.category-bar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.suggestions-box {
+  position: absolute;
+  background: var(--card);
+  width: 250px;
+  max-height: 250px;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.4);
+  padding: 5px 0;
+  display: none;
+  z-index: 999;
+}
+
+.suggestion-item {
+  padding: 8px 15px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.suggestion-item:hover {
+  background: var(--primary);
+  color: black;
+}
+
+/* Filters inside should be inline-flex */
+#filters {
+  display: inline-flex;
+  gap: 10px;
+}
+
+#filters .filter-btn {
+  flex: 0 0 auto;
+}
+#video-feed{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:20px;
+  width:90%;
+  margin:auto;
+}
+.video-card{
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 8px 16px rgba(0,0,0,.3);
+}
+video{
+  width:100%;
+  height:300px;
+  background:#0f172a;
+}
+.video-info{
+  padding:15px;
+}
+mark{
+  background:#38bdf8;
+  color:#000;
+  padding:2px 4px;
+  border-radius:4px;
+}
+.video-card {
+  position: relative;
+}
+
+.video-watermark {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none; /* क्लिक रोकता नहीं */
+  z-index: 50;
+  backdrop-filter: blur(3px);
+}
+
+.pip-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,.6);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 20;
+}
+</style>
   </head>
 <body>
 <!-- Welcome Popup on Page Load -->
