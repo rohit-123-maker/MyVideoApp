@@ -73,6 +73,330 @@
 <main id="video-feed"></main>
 <!-- Scripts -->
 <script src="/style.js"></script>
+<script>
+const videoFeed = document.getElementById('video-feed');
+const searchInput = document.getElementById('search');
+const filterButtons = document.querySelectorAll('.filter-btn');
 
+// 🔄 Restore saved state
+let activeCategory = localStorage.getItem('category') || "all";
+searchInput.value = localStorage.getItem('search') || "";
+
+const videos = [
+  { src:'https://www.w3schools.com/html/mov_bbb.mp4', title:'Big Buck Bunny', desc:'Animation movie', category:'animation' },
+  { src:'https://www.w3schools.com/html/movie.mp4', title:'Bear Nature', desc:'Nature and forest', category:'nature' },
+  { src:'https://www.w3schools.com/html/mov_bbb.mp4', title:'Wild Animals', desc:'Wildlife documentary', category:'wildlife' },
+  { src:'https://www.w3schools.com/html/mov_bbb.mp4', title:'Big Buck Bunny', desc:'Animation movie', category:'animation' },
+  { src:'https://www.w3schools.com/html/movie.mp4', title:'Bear Nature', desc:'Nature and forest', category:'nature' },
+  { src:'https://www.w3schools.com/html/mov_bbb.mp4', title:'Wild Animals', desc:'Wildlife documentary', category:'wildlife' }
+];
+
+// 🔍 Highlight helper
+function highlightText(text, query){
+  if(!query) return text;
+  return text.replace(new RegExp(`(${query})`, 'gi'), '<mark>$1</mark>');
+}
+
+// 🔁 Render videos
+function renderVideos(filter=""){
+  videoFeed.innerHTML = "";
+
+  videos
+    .filter(v =>
+      (activeCategory === "all" || v.category === activeCategory) &&
+      (v.title.toLowerCase().includes(filter) || v.desc.toLowerCase().includes(filter))
+    )
+    .forEach(video => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+  <div class="pip-btn">PiP</div>
+  <div class="video-watermark">MyVideoApp</div>
+
+  <video controls preload="metadata" playsinline webkit-playsinline controlsList="nodownload" class="video-box">
+    <source src="${video.src}" type="video/mp4">
+  </video>
+
+  <div class="video-info">
+    <h3>${highlightText(video.title, filter)}</h3>
+    <p>${highlightText(video.desc, filter)}</p>
+  </div>
+`;
+      videoFeed.appendChild(card);
+    });
+
+  attachVideoControl();
+}
+
+// 🔥 One video at a time
+function attachVideoControl(){
+  const vids = document.querySelectorAll('video');
+  vids.forEach(v => {
+    v.addEventListener('play', () => {
+      vids.forEach(o => o !== v && o.pause());
+    });
+  });
+}
+
+// ========= MENU TOGGLE =========
+const menuBtn = document.getElementById("menu-btn");
+const menuBox = document.getElementById("menu-box");
+
+menuBtn.addEventListener("click", () => {
+  menuBox.style.display = menuBox.style.display === "flex" ? "none" : "flex";
+});
+
+// Outside click → hide menu
+document.addEventListener("click", (e) => {
+  if (!menuBox.contains(e.target) && e.target !== menuBtn) {
+    menuBox.style.display = "none";
+  }
+});
+
+// ========= WATCH HISTORY =========
+let watchHistory = JSON.parse(localStorage.getItem("watchHistory") || "[]");
+
+// Save video when played
+function trackWatch(videoObj) {
+  watchHistory.unshift(videoObj);
+  watchHistory = watchHistory.slice(0, 20);
+  localStorage.setItem("watchHistory", JSON.stringify(watchHistory));
+}
+
+// Show History
+function showWatchHistory() {
+  alert("📺 Watch History:\n\n" + 
+        watchHistory.map(v => v.title).join("\n"));
+}
+
+// ========= LIKED VIDEOS =========
+let liked = JSON.parse(localStorage.getItem("likedVideos") || "[]");
+
+function showLiked() {
+  alert("❤️ Liked Videos:\n\n" + liked.join("\n"));
+}
+
+// ========= SAVED / WATCH LATER =========
+let saved = JSON.parse(localStorage.getItem("savedVideos") || "[]");
+
+function showSaved() {
+  alert("📌 Watch Later:\n\n" + saved.join("\n"));
+}
+
+// ========= CLEAR HISTORY =========
+function clearHistory() {
+  localStorage.removeItem("watchHistory");
+  watchHistory = [];
+  alert("🧹 Watch history cleared!");
+}
+
+// ⏳ Debounce
+function debounce(fn, delay=300){
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+}
+
+// 🔎 Search handler
+const debouncedSearch = debounce(e => {
+  localStorage.setItem('search', e.target.value.toLowerCase());
+  renderVideos(e.target.value.toLowerCase());
+});
+searchInput.addEventListener('input', debouncedSearch);
+
+// ===== SEARCH HISTORY SYSTEM =====
+let searchHistory = JSON.parse(localStorage.getItem("searchHistory") || "[]");
+
+const suggestionBox = document.getElementById("search-suggestions");
+
+// Save search into history
+function saveSearch(term) {
+  if (!term.trim()) return;
+  term = term.toLowerCase();
+
+  // Avoid duplicates
+  searchHistory = searchHistory.filter(item => item !== term);
+
+  // add on top
+  searchHistory.unshift(term);
+
+  // limit to last 10
+  searchHistory = searchHistory.slice(0, 10);
+
+  localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+}
+
+// Show suggestions
+function showSuggestions(filter = "") {
+  let list = searchHistory;
+
+  if (filter) {
+    list = list.filter(item => item.includes(filter.toLowerCase()));
+  }
+
+  if (list.length === 0) {
+    suggestionBox.style.display = "none";
+    return;
+  }
+
+  suggestionBox.innerHTML = list
+    .map(item => `<div class="suggestion-item">${item}</div>`)
+    .join("");
+
+  suggestionBox.style.display = "block";
+}
+
+// Click on suggestion → use it
+suggestionBox.addEventListener("click", (e) => {
+  if (e.target.classList.contains("suggestion-item")) {
+    const val = e.target.textContent;
+    searchInput.value = val;
+    localStorage.setItem("search", val);
+    renderVideos(val);
+    saveSearch(val);
+    suggestionBox.style.display = "none";
+  }
+});
+
+// Hide on outside click
+document.addEventListener("click", (e) => {
+  if (!suggestionBox.contains(e.target) && e.target !== searchInput) {
+    suggestionBox.style.display = "none";
+  }
+});
+
+// When typing → show suggestions + search
+searchInput.addEventListener("input", (e) => {
+  const val = e.target.value.toLowerCase();
+  showSuggestions(val);
+});
+searchInput.addEventListener("focus", () => {
+  showSuggestions(searchInput.value.toLowerCase());
+});
+
+// Save search when pressing Enter
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const val = searchInput.value.trim();
+    if (val) {
+      saveSearch(val);
+      renderVideos(val.toLowerCase());
+      suggestionBox.style.display = "none";
+    }
+  }
+});
+
+// 🏷 Category filter
+filterButtons.forEach(btn => {
+  if(btn.dataset.category === activeCategory){
+    btn.classList.add('active');
+  }
+
+  btn.addEventListener('click', () => {
+    filterButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = btn.dataset.category;
+    localStorage.setItem('category', activeCategory);
+    renderVideos(searchInput.value.toLowerCase());
+  });
+});
+
+// Force fullscreen on user fullscreen request (like YouTube)
+document.addEventListener("click", function(e) {
+    if (e.target.tagName === "VIDEO") return;  // ignore clicks on video
+
+    // if a fullscreenchange happens, ignore
+}, true);
+
+function addFullscreenSupport() {
+    document.querySelectorAll(".video-player").forEach(video => {
+        video.addEventListener("webkitbeginfullscreen", () => {
+            // iOS Safari auto fullscreen — nothing needed
+        });
+
+        video.addEventListener("fullscreenchange", () => {
+            // desktop native
+        });
+
+        // When user presses the fullscreen button inside the video UI
+        video.addEventListener("enterpictureinpicture", e => {
+            e.preventDefault();
+        });
+
+        // Detect fullscreen request by API
+        video.addEventListener("click", () => {
+            // Do nothing on click
+        });
+
+        // Override native fullscreen button
+        video.addEventListener("webkitfullscreenchange", () => {});
+        
+        video.addEventListener("webkitbeginfullscreen", () => {});
+
+        // Listen for the built-in fullscreen button request
+        video.addEventListener("mouseenter", () => {
+            video.onfullscreenchange = () => {};
+        });
+
+        // 🎯 MOST IMPORTANT: when user requests fullscreen:
+        video.addEventListener("fullscreenrequested", () => {
+            forceFullScreen(video);
+        });
+    });
+}
+
+// Enable Picture-in-Picture
+function enablePiP() {
+  document.querySelectorAll(".video-card").forEach(card => {
+    
+    const btn = card.querySelector(".pip-btn");
+    const video = card.querySelector("video");
+
+    // PiP Button Click
+    btn.addEventListener("click", async () => {
+      try {
+        // अगर PiP में है, तो बाहर निकालो
+        if (document.pictureInPictureElement) {
+          await document.exitPictureInPicture();
+        } else {
+          await video.requestPictureInPicture();
+        }
+      } catch (err) {
+        console.log("PiP error:", err);
+      }
+    });
+
+    // Double click on video → PiP
+    video.addEventListener("dblclick", async () => {
+      try {
+        await video.requestPictureInPicture();
+      } catch (err) {}
+    });
+
+  });
+}
+
+// 🔥 Force fullscreen programmatically
+function forceFullScreen(video) {
+    if (video.requestFullscreen) video.requestFullscreen();
+    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    else if (video.msRequestFullscreen) video.msRequestFullscreen();
+}
+
+// 🌙 Dark mode
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
+  function closePopup() {
+    document.getElementById("popup").style.display = "none";
+  }
+// Initial load
+renderVideos(searchInput.value.toLowerCase());
+enablePiP();
+addFullscreenSupport();
+
+</script>
 </body>
 </html>
