@@ -247,7 +247,7 @@ mark{
 <div class="modal" id="popup">
   <div class="modal-content">
     <h2>Welcome!</h2>
-    <p>Welcome to my webpage.</p>
+    <p>Welcome to my webpage. 🤗</p>
     <button onclick="closePopup()">OK</button>
   </div>
 </div>
@@ -617,6 +617,14 @@ function forceFullScreen(video) {
     else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
     else if (video.msRequestFullscreen) video.msRequestFullscreen();
 }
+
+//  Password for Safety 
+let password = "Rohit@123";
+let userPasword = prompt("Enter your password:");
+while (userPasword != password) {
+  userPasword = prompt("You entered the wrong password. Try again");
+}
+console.log("Welcome 💐");
 
 // 🌙 Dark mode
 function toggleDark(){
