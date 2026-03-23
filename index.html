@@ -90,6 +90,13 @@ button{
   background:#38bdf8;
   color:#000;
 }
+.link-btn {
+  margin-left: 12px;
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 500;
+}
+
 /* Category wrapper */
 .category-bar {
   overflow-x: auto;
@@ -274,9 +281,9 @@ mark{
     <div id="search-suggestions" class="suggestions-box"></div>
     <button onclick="toggleDark()">🌙</button>
         <div class="links">
-      <i class="fa-solid fa-home"></i><a href="#" target="_blank"> Home </a>
-      <i class="fa-solid fa-link"></i><a href="#" target="_blank">All Posts</a>
-      <i class="fa-solid fa-link"></i><a href="#" target="_blank">RSS</a>
+      <i class="fa-solid fa-home"></i><a class="link-btn" href="#" target="_blank"> Home </a>
+      <i class="fa-solid fa-link"></i><a class="link-btn" href="#" target="_blank">All Posts</a>
+      <i class="fa-solid fa-link"></i><a class="link-btn" href="#" target="_blank">RSS</a>
     </div>
   </div>
 
